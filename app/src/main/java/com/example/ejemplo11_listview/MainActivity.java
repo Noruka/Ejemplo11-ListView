@@ -1,22 +1,20 @@
 package com.example.ejemplo11_listview;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import com.example.ejemplo11_listview.adapters.ContactosAdapter;
-import com.example.ejemplo11_listview.pojo.Contacto;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import com.example.ejemplo11_listview.adapters.ContactosAdapter;
+import com.example.ejemplo11_listview.pojo.Contacto;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -27,6 +25,17 @@ public class MainActivity extends AppCompatActivity {
     private final int NEWCONTACTO = 7;
     private ContactosAdapter contactosAdapter;
 
+    // ALMACENAMIENTO PERSISTENTE
+
+    private SharedPreferences sharedPreferences;
+
+    // Datos insertaré -> ArrayList en 1 sharedpreferences 1 unico registro
+    // Serialización el ArrayList<Contactos> -> Cadena de texto -> Json
+    private Gson gson;
+
+
+    // --------------------------
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
 
         listView = findViewById(R.id.contenedorMain);
         listaContactos = new ArrayList<>();
+
+        sharedPreferences = getSharedPreferences("contactos", MODE_PRIVATE);
+        gson = new Gson();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +102,10 @@ public class MainActivity extends AppCompatActivity {
 
                     listaContactos.add((Contacto) data.getExtras().getParcelable("contacto"));
                     contactosAdapter.notifyDataSetChanged(); // Forzar al adapter a actualizarse
+
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("contactos", gson.toJson(listaContactos));
+                    editor.commit();
                 }
 
             }

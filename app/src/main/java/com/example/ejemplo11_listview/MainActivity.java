@@ -3,6 +3,7 @@ package com.example.ejemplo11_listview;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -15,6 +16,7 @@ import com.example.ejemplo11_listview.adapters.ContactosAdapter;
 import com.example.ejemplo11_listview.pojo.Contacto;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 
@@ -48,6 +50,12 @@ public class MainActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("contactos", MODE_PRIVATE);
         gson = new Gson();
+
+        String contactosCodificados = sharedPreferences.getString("contactos", null);
+        if (contactosCodificados != null) {
+            listaContactos = gson.fromJson(contactosCodificados, new TypeToken<ArrayList<Contacto>>() {
+            }.getType());
+        }
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -106,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("contactos", gson.toJson(listaContactos));
                     editor.commit();
+
+                    Log.d("SHARED", gson.toJson(listaContactos));
                 }
 
             }

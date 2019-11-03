@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("contactos", MODE_PRIVATE);
         gson = new Gson();
 
+        //coger shared preferences
+
         String contactosCodificados = sharedPreferences.getString("contactos", null);
         if (contactosCodificados != null) {
             listaContactos = gson.fromJson(contactosCodificados, new TypeToken<ArrayList<Contacto>>() {
@@ -107,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
             if (requestCode == NEWCONTACTO) {
 
                 if (data != null) {
+
+                    //guardar en shared preferences
 
                     listaContactos.add((Contacto) data.getExtras().getParcelable("contacto"));
                     contactosAdapter.notifyDataSetChanged(); // Forzar al adapter a actualizarse
